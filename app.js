@@ -14,26 +14,19 @@ const volumeValue = document.getElementById('volumeValue');
 const upvoteBtn = document.getElementById('upvoteBtn');
 
 // ==================== API CONFIGURATION ====================
-// Update this with your actual Hugging Face Space URL
 const API_BASE_URL = 'https://ahmeddewy1-radiofm.hf.space'; 
 
+// Cleaned up: Only one definition of cachedStats
 let cachedStats = {
     servers: localStorage.getItem('cachedServers') || 0,
     online_members: localStorage.getItem('cachedOnline') || 0,
     upvotes: localStorage.getItem('cachedUpvotes') || 0,
     voice_connections: localStorage.getItem('cachedVoice') || 0,
+    total_plays: localStorage.getItem('cachedPlays') || 0,
     uptime: '--'
 };
-// ... rest of your code ...
 
-// Fallback/default stats (used when API is unavailable)
-let cachedStats = {
-    servers: localStorage.getItem('cachedServers') || 0,
-    online_members: localStorage.getItem('cachedOnline') || 0,
-    upvotes: localStorage.getItem('cachedUpvotes') || 0,
-    voice_connections: localStorage.getItem('cachedVoice') || 0,
-    uptime: '--'
-};
+
 
 // ==================== THEME MANAGEMENT ====================
 function initTheme() {
@@ -137,13 +130,16 @@ function switchTab(e) {
 // ==================== STATS MANAGEMENT ====================
 async function fetchStats() {
     try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
         const response = await fetch(`${API_BASE_URL}/api/stats`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
             },
-            timeout: 5000
+            signal: controller.signal
         });
+        clearTimeout(timeoutId);
         
         if (!response.ok) throw new Error('API unavailable');
         
@@ -373,7 +369,7 @@ function handleAnimationsToggle() {
 function getInviteLink() {
     // Replace with your actual bot client ID
     const clientId = 'YOUR_BOT_CLIENT_ID';
-    return `[discord.com](https://discord.com/api/oauth2/authorize?client_id=${clientId}&permissions=8&scope=bot%20applications.commands)`;
+    return `https://discord.com/api/oauth2/authorize?client_id=${clientId}&permissions=8&scope=bot%20applications.commands`;
 }
 
 // ==================== INITIALIZATION ====================

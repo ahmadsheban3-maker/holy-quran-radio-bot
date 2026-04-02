@@ -14,8 +14,17 @@ const volumeValue = document.getElementById('volumeValue');
 const upvoteBtn = document.getElementById('upvoteBtn');
 
 // ==================== API CONFIGURATION ====================
-// Replace with your actual API URL when deployed
-const API_BASE_URL = '[your-bot-api.herokuapp.com](https://your-bot-api.herokuapp.com)'; // Update this!
+// Update this with your actual Hugging Face Space URL
+const API_BASE_URL = 'https://ahmeddewy1-radiofm.hf.space'; 
+
+let cachedStats = {
+    servers: localStorage.getItem('cachedServers') || 0,
+    online_members: localStorage.getItem('cachedOnline') || 0,
+    upvotes: localStorage.getItem('cachedUpvotes') || 0,
+    voice_connections: localStorage.getItem('cachedVoice') || 0,
+    uptime: '--'
+};
+// ... rest of your code ...
 
 // Fallback/default stats (used when API is unavailable)
 let cachedStats = {
